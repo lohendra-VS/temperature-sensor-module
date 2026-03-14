@@ -1,0 +1,33 @@
+#include <DHT.h>
+#include <LiquidCrystal_I2C.h>
+
+#define DHTPIN 2
+#define DHTTYPE DHT11
+
+DHT dht(DHTPIN, DHTTYPE);
+LiquidCrystal_I2C lcd(0x27,16,2); // Use your I2C address
+
+void setup() {
+  lcd.init();
+  lcd.backlight();
+  dht.begin();
+  delay(2000); // sensor warm-up
+}
+
+void loop() {
+  float temp = dht.readTemperature(); // Read temperature
+
+  lcd.setCursor(0,0);
+  lcd.print("Veppanilai:"); // Tamil header
+
+  lcd.setCursor(0,1);
+  if(isnan(temp)) {
+    lcd.print("Sensor Error"); // stable message if sensor fails
+  } else {
+    lcd.print((int)temp);   // stable integer temperature
+    lcd.print((char)223);   // degree symbol
+    lcd.print("C");
+  }
+
+  delay(2000); // update every 2 sec
+}
